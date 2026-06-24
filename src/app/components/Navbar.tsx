@@ -81,7 +81,7 @@ const NAV: NavLink[] = [
     label: "AI Assistant",
     href: "/chat",
     badge: 2,
-    icon: Bot,
+    // icon: Bot,
   },
   {
     label: "Wellness",
@@ -113,7 +113,7 @@ const NAV: NavLink[] = [
     label: "Notifications",
     href: "/notifications",
     badge: 5,
-    icon: Bell,
+    // icon: Bell,
   },
 ];
 
@@ -223,14 +223,14 @@ export default function Navbar() {
         }`}
       >
         <div
-          className="max-w-[1400px] mx-auto px-6 flex items-center gap-1 transition-[height] duration-500 ease-out"
+          className="max-w-350 mx-auto px-6 flex items-center gap-1 transition-[height] duration-500 ease-out"
           style={{ height: navHeight }}
         >
           {/* ── Brand Logo ── */}
-          <Link href="/" className="flex items-center gap-3  flex-shrink-0 group">
+          <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="flex flex-col leading-tight">
               <span className={`font-display text-[17px] font-semibold tracking-tight ${dark ? "text-white" : "text-[#161513]"}`}>
-                Wellora
+              Orva
               </span>
               <span className={`text-[10px] font-medium tracking-[0.18em] uppercase ${muted}`}>
                 AI Health Platform
@@ -264,10 +264,10 @@ export default function Navbar() {
                     href={item.href}
                     className={`relative flex items-center gap-2 px-4 py-2.5 rounded-xl text-[13.5px] font-medium ${text} transition-colors duration-150 whitespace-nowrap ${ringFocus}`}
                   >
-                    {item.icon && <item.icon className={`w-[15px] h-[15px] ${muted}`} strokeWidth={2} />}
+                    {item.icon && <item.icon className={`w-3.5 h-3.5 ${muted}`} strokeWidth={2} />}
                     {item.label}
                     {item.badge && (
-                      <span className="relative ml-0.5 flex h-4 w-4 flex-shrink-0">
+                      <span className="relative ml-0.5 flex h-4 w-4 shrink-0">
                         <span className="absolute inline-flex h-full w-full rounded-full bg-[#cc785c] opacity-60 animate-ping" />
                         <span className="relative inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#cc785c] text-white text-[9px] font-bold">
                           {item.badge}
@@ -294,7 +294,7 @@ export default function Navbar() {
                     {openDrop === item.label && item.dropdown && (
                       <div
                         role="menu"
-                        className={`absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 ${dropBg} backdrop-blur-xl border ${border} rounded-2xl p-2 min-w-[300px] ${shadowDrop} z-50`}
+                        className={`absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 ${dropBg} backdrop-blur-xl border ${border} rounded-2xl p-2 min-w-75 ${shadowDrop} z-50`}
                         style={{ animation: "dropIn 2 ease-linear" }}
                       >
                         {item.dropdown.map((d, i) => (
@@ -306,15 +306,15 @@ export default function Navbar() {
                             style={{ animation: `fadeSlide 0.25s ease-out ${i * 0.04}s both` }}
                             className={`flex items-center gap-3 px-3 py-2.5 rounded-xl ${hoverBg} transition-colors duration-150 no-underline group/item`}
                           >
-                            <span className={`flex items-center justify-center w-9 h-9 rounded-lg flex-shrink-0 ${chipBg}`}>
-                              <d.icon className={`w-[17px] h-[17px] ${chipText}`} strokeWidth={2} />
+                            <span className={`flex items-center justify-center w-9 h-9 rounded-lg shrink-0 ${chipBg}`}>
+                              <d.icon className={`w-4.5 h-4.5 ${chipText}`} strokeWidth={2} />
                             </span>
                             <span className="flex flex-col gap-0.5 min-w-0">
                               <span className={`text-[13.5px] font-medium ${text}`}>{d.label}</span>
                               <span className={`text-[11.5px] ${muted} truncate`}>{d.sub}</span>
                             </span>
                             <ChevronDown
-                              className={`w-3.5 h-3.5 ${muted} -rotate-90 ml-auto opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-200 flex-shrink-0`}
+                              className={`w-3.5 h-3.5 ${muted} -rotate-90 ml-auto opacity-0 -translate-x-1 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all duration-200 shrink-0`}
                             />
                           </Link>
                         ))}
@@ -327,7 +327,7 @@ export default function Navbar() {
           </ul>
 
           {/* ── Right Controls ── */}
-          <div className="flex items-center gap-2.5 ml-auto flex-shrink-0">
+          <div className="flex items-center gap-2.5 ml-auto shrink-0">
             {/* Theme toggle */}
             <button
               onClick={() => setDark(!dark)}
@@ -393,7 +393,7 @@ export default function Navbar() {
                   onClick={() => setMobileOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3.5 rounded-xl text-[15px] font-medium ${text} ${hoverBg} transition-all duration-150 no-underline`}
                 >
-                  {item.icon && <item.icon className={`w-[18px] h-[18px] ${muted}`} />}
+                  {item.icon && <item.icon className={`w-4.5 h-4.5 ${muted}`} />}
                   <span className="flex-1">{item.label}</span>
                   {item.badge && (
                     <span className="w-6 h-6 rounded-full bg-[#cc785c] text-white text-[11px] font-bold flex items-center justify-center">
@@ -430,7 +430,7 @@ export default function Navbar() {
                             onClick={() => setMobileOpen(false)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl ${text} ${hoverBg} text-sm transition-all duration-150 no-underline`}
                           >
-                            <span className={`flex items-center justify-center w-8 h-8 rounded-lg flex-shrink-0 ${chipBg}`}>
+                            <span className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${chipBg}`}>
                               <d.icon className={`w-4 h-4 ${chipText}`} />
                             </span>
                             <span className="flex flex-col">
