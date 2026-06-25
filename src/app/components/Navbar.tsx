@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useSelector, useDispatch } from "react-redux";
+import { selectDark, toggleTheme } from "../../lib/features/theme/themeSlice";
 import {
   Sun,
   Moon,
@@ -8,8 +10,6 @@ import {
   X,
   ChevronDown,
   User,
-  Bell,
-  Bot,
   Heart,
   Home,
   Users,
@@ -81,7 +81,6 @@ const NAV: NavLink[] = [
     label: "AI Assistant",
     href: "/chat",
     badge: 2,
-    // icon: Bot,
   },
   {
     label: "Wellness",
@@ -113,20 +112,23 @@ const NAV: NavLink[] = [
     label: "Notifications",
     href: "/notifications",
     badge: 5,
-    // icon: Bell,
   },
 ];
 
 export default function Navbar() {
-  const [dark, setDark] = useState(true);
-  const [openDrop, setOpenDrop] = useState<string | null>(null);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [mobileExp, setMobileExp] = useState<string | null>(null);
-  const [scrolled, setScrolled] = useState(false);
-  const [pill, setPill] = useState({ left: 0, width: 0, opacity: 0 });
+  // ✅ Redux — replaces: const [dark, setDark] = useState(true)
+  const dark     = useSelector(selectDark);
+  const dispatch = useDispatch();
 
-  const navRef = useRef<HTMLElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
+  // Local UI state (these stay local — they're navbar-only concerns)
+  const [openDrop,   setOpenDrop]   = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileExp,  setMobileExp]  = useState<string | null>(null);
+  const [scrolled,   setScrolled]   = useState(false);
+  const [pill,       setPill]       = useState({ left: 0, width: 0, opacity: 0 });
+
+  const navRef   = useRef<HTMLElement>(null);
+  const listRef  = useRef<HTMLUListElement>(null);
   const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
 
   useEffect(() => {
@@ -146,10 +148,7 @@ export default function Navbar() {
 
   useEffect(() => {
     const fn = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpenDrop(null);
-        setMobileOpen(false);
-      }
+      if (e.key === "Escape") { setOpenDrop(null); setMobileOpen(false); }
     };
     document.addEventListener("keydown", fn);
     return () => document.removeEventListener("keydown", fn);
@@ -157,13 +156,16 @@ export default function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
 
+  // ✅ Sync <html> background on theme change so no flash between sections
+  useEffect(() => {
+    document.documentElement.style.background = dark ? "#0a0a0a" : "#faf9f5";
+  }, [dark]);
+
   const movePill = useCallback((label: string) => {
-    const el = itemRefs.current[label];
+    const el   = itemRefs.current[label];
     const list = listRef.current;
     if (!el || !list) return;
     const er = el.getBoundingClientRect();
@@ -173,29 +175,25 @@ export default function Navbar() {
 
   const hidePill = useCallback(() => setPill((p) => ({ ...p, opacity: 0 })), []);
 
-
-
-  
-
-
-  const bg = dark ? "bg-[#0a0a0a]" : "bg-[#faf9f5]";
-  const glassBg = dark ? "bg-[#0a0a0a]/72 backdrop-blur-2xl" : "bg-[#faf9f5]/72 backdrop-blur-2xl";
-  const border = dark ? "border-white/[0.08]" : "border-black/[0.07]";
-  const text = dark ? "text-[#ece9e4]" : "text-[#201f1c]";
-  const muted = dark ? "text-[#8c8b84]" : "text-[#8a887f]";
-  const hoverBg = dark ? "hover:bg-white/[0.06]" : "hover:bg-black/[0.045]";
-  const activeBg = dark ? "bg-white/[0.06]" : "bg-black/[0.045]";
-  const dropBg = dark ? "bg-[#131211]/95" : "bg-white/95";
-  const mobileBg = dark ? "bg-[#0a0a0a]/97" : "bg-[#faf9f5]/97";
-  const shadowDrop = dark
+  // ── Design tokens (unchanged) ──────────────────────────────────────────────
+  const bg          = dark ? "bg-[#0a0a0a]"                               : "bg-[#faf9f5]";
+  const glassBg     = dark ? "bg-[#0a0a0a]/72 backdrop-blur-2xl"          : "bg-[#faf9f5]/72 backdrop-blur-2xl";
+  const border      = dark ? "border-white/[0.08]"                         : "border-black/[0.07]";
+  const text        = dark ? "text-[#ece9e4]"                              : "text-[#201f1c]";
+  const muted       = dark ? "text-[#8c8b84]"                              : "text-[#8a887f]";
+  const hoverBg     = dark ? "hover:bg-white/[0.06]"                       : "hover:bg-black/[0.045]";
+  const activeBg    = dark ? "bg-white/[0.06]"                             : "bg-black/[0.045]";
+  const dropBg      = dark ? "bg-[#131211]/95"                             : "bg-white/95";
+  const mobileBg    = dark ? "bg-[#0a0a0a]/97"                             : "bg-[#faf9f5]/97";
+  const shadowDrop  = dark
     ? "shadow-[0_20px_60px_-12px_rgba(0,0,0,0.85)]"
     : "shadow-[0_20px_60px_-12px_rgba(0,0,0,0.16)]";
-  const chipBg = dark ? "bg-[#cc785c]/15" : "bg-[#cc785c]/10";
-  const chipText = "text-[#cc785c]";
-  const ringFocus = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cc785c]/60";
-  const pillColor = dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.045)";
+  const chipBg      = dark ? "bg-[#cc785c]/15"                             : "bg-[#cc785c]/10";
+  const chipText    = "text-[#cc785c]";
+  const ringFocus   = "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#cc785c]/60";
+  const pillColor   = dark ? "rgba(255,255,255,0.06)"                      : "rgba(0,0,0,0.045)";
   const ctaGradient = "linear-gradient(135deg, #cc785c 0%, #b5613e 100%)";
-  const navHeight = scrolled ? 64 : 76;
+  const navHeight   = scrolled ? 64 : 76;
 
   return (
     <>
@@ -203,9 +201,9 @@ export default function Navbar() {
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
         .font-display { font-family: 'Fraunces', Georgia, 'Times New Roman', serif; }
         .font-body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        @keyframes dropIn { from { opacity: 0; transform: translate(-50%, -6px) scale(0.97); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
-        @keyframes fadeSlide { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes dropIn     { from { opacity: 0; transform: translate(-50%, -6px) scale(0.97); } to { opacity: 1; transform: translate(-50%, 0) scale(1); } }
+        @keyframes fadeSlide  { from { opacity: 0; transform: translateX(-6px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn     { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeSlideUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         @media (prefers-reduced-motion: reduce) {
           *, *::before, *::after {
@@ -218,7 +216,7 @@ export default function Navbar() {
 
       <nav
         ref={navRef}
-        className={`font-body  fixed top-0 left-0 right-0 z-50 w-full border-b ${border} transition-all duration-500 ${
+        className={`font-body fixed top-0 left-0 right-0 z-50 w-full border-b ${border} transition-all duration-500 ${
           scrolled ? glassBg : bg
         }`}
       >
@@ -230,7 +228,7 @@ export default function Navbar() {
           <Link href="/" className="flex items-center gap-3 shrink-0 group">
             <div className="flex flex-col leading-tight">
               <span className={`font-display text-[17px] font-semibold tracking-tight ${dark ? "text-white" : "text-[#161513]"}`}>
-              Orva
+                Orva
               </span>
               <span className={`text-[10px] font-medium tracking-[0.18em] uppercase ${muted}`}>
                 AI Health Platform
@@ -242,7 +240,7 @@ export default function Navbar() {
           <ul
             ref={listRef}
             onMouseLeave={hidePill}
-            className="hidden xl:flex items-center font- list-none flex-1 relative"
+            className="hidden xl:flex items-center list-none flex-1 relative"
           >
             <div
               aria-hidden="true"
@@ -254,9 +252,7 @@ export default function Navbar() {
               <li
                 key={item.label}
                 className="relative z-10"
-                ref={(el) => {
-                  itemRefs.current[item.label] = el;
-                }}
+                ref={(el) => { itemRefs.current[item.label] = el; }}
                 onMouseEnter={() => movePill(item.label)}
               >
                 {item.href ? (
@@ -281,7 +277,7 @@ export default function Navbar() {
                       onClick={() => setOpenDrop(openDrop === item.label ? null : item.label)}
                       aria-haspopup="true"
                       aria-expanded={openDrop === item.label}
-                      className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[13.5px] font-medium ${text} transition-colors duration-500  whitespace-nowrap border-none bg-transparent cursor-pointer ${ringFocus}`}
+                      className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-[13.5px] font-medium ${text} transition-colors duration-500 whitespace-nowrap border-none bg-transparent cursor-pointer ${ringFocus}`}
                     >
                       {item.label}
                       <ChevronDown
@@ -295,7 +291,7 @@ export default function Navbar() {
                       <div
                         role="menu"
                         className={`absolute top-[calc(100%+10px)] left-1/2 -translate-x-1/2 ${dropBg} backdrop-blur-xl border ${border} rounded-2xl p-2 min-w-75 ${shadowDrop} z-50`}
-                        style={{ animation: "dropIn 2 ease-linear" }}
+                        style={{ animation: "dropIn 0.2s ease-out both" }}
                       >
                         {item.dropdown.map((d, i) => (
                           <Link
@@ -328,9 +324,10 @@ export default function Navbar() {
 
           {/* ── Right Controls ── */}
           <div className="flex items-center gap-2.5 ml-auto shrink-0">
-            {/* Theme toggle */}
+
+            {/* ✅ Theme toggle — dispatches to Redux instead of local setState */}
             <button
-              onClick={() => setDark(!dark)}
+              onClick={() => dispatch(toggleTheme())}
               aria-label="Toggle theme"
               className={`relative w-10 h-10 rounded-xl border ${border} overflow-hidden ${hoverBg} transition-all duration-200 cursor-pointer bg-transparent hover:scale-105 active:scale-95 ${ringFocus}`}
             >
@@ -457,9 +454,9 @@ export default function Navbar() {
             Book a Session Now
           </Link>
 
-          {/* Mobile theme toggle */}
+          {/* ✅ Mobile theme toggle — also dispatches to Redux */}
           <button
-            onClick={() => setDark(!dark)}
+            onClick={() => dispatch(toggleTheme())}
             className={`py-3.5 mt-2 rounded-2xl border ${border} bg-transparent text-sm font-medium ${text} flex items-center justify-center gap-2 cursor-pointer transition-all duration-150 hover:scale-[1.01]`}
           >
             {dark ? <Sun className="w-4 h-4 text-[#cc785c]" /> : <Moon className="w-4 h-4 text-[#cc785c]" />}
