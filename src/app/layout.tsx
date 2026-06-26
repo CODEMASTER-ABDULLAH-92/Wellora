@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import ReactLenis from "lenis/react";
 import ReduxProvider from "../app/StoreProvider"
-// import 'lenis/dist/lenis.css'
+import 'lenis/dist/lenis.css'
 
 
 
